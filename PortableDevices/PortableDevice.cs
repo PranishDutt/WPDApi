@@ -62,14 +62,14 @@ namespace PortableDevices
         {
             if (_isConnected) return;
 
-            var clientInfo = (IPortableDeviceValues) new PortableDeviceValuesClass();
+            var clientInfo = (IPortableDeviceValues)new PortableDeviceValuesClass();
             PortableDeviceClass.Open(DeviceId, clientInfo);
             _isConnected = true;
         }
 
         public void Disconnect()
         {
-            if (!_isConnected) return; 
+            if (!_isConnected) return;
 
             PortableDeviceClass.Close();
             _isConnected = false;
@@ -219,7 +219,7 @@ namespace PortableDevices
             }
 
             var reader = new StreamReader(targetStream);
-            var text =  reader.ReadToEnd();
+            var text = reader.ReadToEnd();
             targetStream.Close();
 
             return text;
@@ -229,7 +229,7 @@ namespace PortableDevices
             string value,
             out PortableDeviceApiLib.tag_inner_PROPVARIANT propvarValue)
         {
-            var pValues = (IPortableDeviceValues) new PortableDeviceValuesClass();
+            var pValues = (IPortableDeviceValues)new PortableDeviceValuesClass();
 
             var wpdObjectId = new _tagpropertykey
             {
@@ -256,6 +256,22 @@ namespace PortableDevices
             objectIds.Add(variant);
 
             content.Delete(0, objectIds, null);
+        }
+
+        public void DeleteFolder(PortableDeviceFolder folder)
+        {
+            IPortableDeviceContent content;
+            PortableDeviceClass.Content(out content);
+
+            var variant = new PortableDeviceApiLib.tag_inner_PROPVARIANT();
+            StringToPropVariant(folder.Id, out variant);
+
+            var objectIds =
+                new PortableDevicePropVariantCollection()
+                as PortableDeviceApiLib.IPortableDevicePropVariantCollection;
+            objectIds.Add(variant);
+
+            content.Delete(1, objectIds, null);
         }
 
         private static PortableDeviceObject WrapObject(IPortableDeviceProperties properties,
@@ -336,6 +352,34 @@ namespace PortableDevices
             return values;
         }
 
+        private IPortableDeviceValues GetRequiredPropertiesForFolderType(string folderName, string parentObjectId)
+        {
+            IPortableDeviceValues values = new PortableDeviceTypesLib.PortableDeviceValues() as IPortableDeviceValues;
+
+            //type
+            var WPD_OBJECT_CONTENT_TYPE = new _tagpropertykey();
+            WPD_OBJECT_CONTENT_TYPE.fmtid = new Guid(0xEF6B490D, 0x5CD8, 0x437A, 0xAF, 0xFC, 0xDA, 0x8B, 0x60, 0xEE, 0x4A, 0x3C);
+            WPD_OBJECT_CONTENT_TYPE.pid = 7;
+
+            var WPD_CONTENT_TYPE_FOLDER = new _tagpropertykey();
+            WPD_CONTENT_TYPE_FOLDER.fmtid = new Guid(0x27E2E392, 0xA111, 0x48E0, 0xAB, 0x0C, 0xE1, 0x77, 0x05, 0xA0, 0x5F, 0x85);
+            values.SetGuidValue(ref WPD_OBJECT_CONTENT_TYPE, WPD_CONTENT_TYPE_FOLDER.fmtid);
+
+            var WPD_OBJECT_PARENT_ID = new _tagpropertykey();
+            WPD_OBJECT_PARENT_ID.fmtid = new Guid(0xEF6B490D, 0x5CD8, 0x437A, 0xAF, 0xFC, 0xDA, 0x8B, 0x60, 0xEE, 0x4A, 0x3C);
+            WPD_OBJECT_PARENT_ID.pid = 3;
+            values.SetStringValue(ref WPD_OBJECT_PARENT_ID, parentObjectId);
+
+            //name
+            var WPD_OBJECT_NAME = new _tagpropertykey();
+            WPD_OBJECT_NAME.fmtid = new Guid(0xEF6B490D, 0x5CD8, 0x437A, 0xAF, 0xFC, 0xDA, 0x8B, 0x60, 0xEE, 0x4A, 0x3C);
+            WPD_OBJECT_NAME.pid = 4;
+            values.SetStringValue(WPD_OBJECT_NAME, folderName);
+
+            return values;
+        }
+
+
         private IPortableDeviceValues GetRequiredPropertiesForContentTypeFromStream(MemoryStream inputStream, string fileName, string parentObjectId)
         {
             var values = new PortableDeviceValues() as IPortableDeviceValues;
@@ -372,7 +416,7 @@ namespace PortableDevices
             return values;
         }
 
-        public void TransferContentToDevice(string fileName, string parentObjectId)
+        public void TransferFileToDevice(string fileName, string parentObjectId)
         {
             IPortableDeviceContent content;
             PortableDeviceClass.Content(out content);
@@ -392,7 +436,7 @@ namespace PortableDevices
 
             var targetStream =
                 (System.Runtime.InteropServices.ComTypes.IStream)tempStream;
-            
+
 
             try
             {
@@ -419,7 +463,19 @@ namespace PortableDevices
 
         }
 
-        public void TransferContentToDeviceFromStream(string fileName, MemoryStream inputStream, string parentObjectId)
+        public void CreateFolder(string folderName, string parentObjectId)
+        {
+
+            IPortableDeviceContent content;
+            PortableDeviceClass.Content(out content);
+
+            string objectID = null;
+
+            var values = GetRequiredPropertiesForFolderType(folderName, parentObjectId);
+            content.CreateObjectWithPropertiesOnly(values, objectID);
+        }
+
+        public void TransferFileToDeviceFromStream(string fileName, MemoryStream inputStream, string parentObjectId)
         {
             IPortableDeviceContent content;
             PortableDeviceClass.Content(out content);

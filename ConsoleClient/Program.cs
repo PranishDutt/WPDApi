@@ -45,7 +45,13 @@ namespace ConsoleClient
             Tablet.DownloadFile(file as PortableDeviceFile, "\\LOCALPATH");
 
             //Transfering file rom file system into device folder
-            Tablet.TransferContentToDevice("\\LOCALPATH", folder.Id);
+            Tablet.TransferFileToDevice("\\LOCALPATH", folder.Id);
+
+            //Creating folder device-side
+            Tablet.CreateFolder("FOLDER NAME", folder.Id);
+        
+            //Deleting folder device-side
+            Tablet.DeleteFolder(folder);
 
             //Transfering file from stream into device folder
             var imgPath = "\\LOCALPATH";
@@ -56,7 +62,7 @@ namespace ConsoleClient
                 image.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
                 imageB = ms.ToArray();
             }
-            Tablet.TransferContentToDeviceFromStream("FILE NAME", new MemoryStream(imageB), folder.Id);
+            Tablet.TransferFileToDeviceFromStream("FILE NAME", new MemoryStream(imageB), folder.Id);
 
             //Close the connection
             Tablet.Disconnect();
