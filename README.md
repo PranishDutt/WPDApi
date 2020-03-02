@@ -37,11 +37,11 @@ To transfer files, create folders and make other wondrous things through MTP wit
             //Getting root directory
             var root = tablet.GetContents();
 
-			//Finding neccessary folder inside the root
+	    //Finding neccessary folder inside the root
             var folder = (root.Files.FirstOrDefault() as PortableDeviceFolder).
                 Files.FirstOrDefault(x => x.Name == "Folder") as PortableDeviceFolder;
 
-             //Finding file inside the folder
+            //Finding file inside the folder
             var file = (folder as PortableDeviceFolder)?.Files?.FirstOrDefault(x => x.Name == "File");
 
             //Deleting file device-side
