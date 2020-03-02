@@ -38,13 +38,16 @@ namespace ConsoleClient
             //Finding file inside the folder
             var file = (folder as PortableDeviceFolder)?.Files?.FirstOrDefault(x => x.Name == "File");
 
+            //Deleting file device-side
+            Tablet.DeleteFile(file as PortableDeviceFile);
+
             //Transfering file into byte array
             var fileIntoByteArr = Tablet.DownloadFileToStream(file as PortableDeviceFile);
 
             //Transfering file into file system
             Tablet.DownloadFile(file as PortableDeviceFile, "\\LOCALPATH");
 
-            //Transfering file rom file system into device folder
+            //Transfering file from file system into device folder
             Tablet.TransferFileToDevice("\\LOCALPATH", folder.Id);
 
             //Creating folder device-side
