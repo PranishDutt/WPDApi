@@ -25,7 +25,7 @@ To transfer files, create folders and make other wondrous things through MTP wit
 ##### Sample usage:
 
 ```csharp
-			//Creating instances
+            //Creating instances
             PortableDevice tablet;
             PortableDeviceCollection devices = new PortableDeviceCollection();
             devices.Refresh();
