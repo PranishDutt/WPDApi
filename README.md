@@ -5,7 +5,7 @@
 To transfer files, create folders and make other wondrous things through MTP with C#:
 
 ##### Download this NuGet package:
-[Portable Devices.Plus.x64](https://www.nuget.org/packages/PortableDevices.Plus.x64/) or [Portable Devices.Plus.x86](https://www.nuget.org/packages/PortableDevices.Plus.x86/)
+[PortableDevices.Plus.x64](https://www.nuget.org/packages/PortableDevices.Plus.x64/) or [PortableDevices.Plus.x86](https://www.nuget.org/packages/PortableDevices.Plus.x86/)
 
 ##### Add references to these 4 COM libraries:
 
