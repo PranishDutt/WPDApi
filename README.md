@@ -45,22 +45,22 @@ To transfer files, create folders and make other wondrous things through MTP wit
             var file = (folder as PortableDeviceFolder)?.Files?.FirstOrDefault(x => x.Name == "File");
 
             //Deleting file device-side
-            Tablet.DeleteFile(file as PortableDeviceFile);
+            tablet.DeleteFile(file as PortableDeviceFile);
 
             //Transfering file into byte array
-            var fileIntoByteArr = Tablet.DownloadFileToStream(file as PortableDeviceFile);
+            var fileIntoByteArr = tablet.DownloadFileToStream(file as PortableDeviceFile);
 
             //Transfering file into file system
-            Tablet.DownloadFile(file as PortableDeviceFile, "\\LOCALPATH");
+            tablet.DownloadFile(file as PortableDeviceFile, "\\LOCALPATH");
 
             //Transfering file from file system into device folder
-            Tablet.TransferFileToDevice("\\LOCALPATH", folder.Id);
+            tablet.TransferFileToDevice("\\LOCALPATH", folder.Id);
 
             //Creating folder device-side
-            Tablet.CreateFolder("FOLDER NAME", folder.Id);
+            tablet.CreateFolder("FOLDER NAME", folder.Id);
         
             //Deleting folder device-side
-            Tablet.DeleteFolder(folder);
+            tablet.DeleteFolder(folder);
 			
             //Close the connection
             tablet.Disconnect();
